@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Moon Bakery</title>
+
+        <!-- CSS Style -->
+        <link rel="stylesheet" href="CSS/style.css">
+
+        <!-- Google Font -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+            rel="stylesheet">
+
+        <!-- Font Awesome Icon -->
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+
+        <!-- Owl Carousel -->
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
+
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css" />
+
+        <!-- Feather Icons -->
+        <script src="https://unpkg.com/feather-icons"></script>
+
+        <!-- Alpine JS -->
+        <script defer
+            src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+        <!-- App JS -->
+        <script src="JS/app.js" async></script>
+
+        <!-- Midtrans Payment -->
+        <script type="text/javascript"
+            src="https://app.sandbox.midtrans.com/snap/snap.js"
+            data-client-key="SB-Mid-client-cMkgzg_0vS9S7OVP"></script>
+
+    </head>
+    <body>
+        <!-- Navigation Bar -->
+        <header class="header">
+            <nav class="navbar" x-data>
+                <a href="#" class="navbar-logo">
+                    <span class="moon">Moon</span><span>Bakery</span></a>
+
+                <div class="navbar-nav" id="nav-menu">
+                    <ul class="nav__list">
+                        <li class="nav__item"><a href="#home"
+                                class="nav__link active-link">Home</a></li>
+                        <li class="nav__item"><a href="#about"
+                                class="nav__link">About Us</a></li>
+                        <li class="nav__item"><a href="#menu"
+                                class="nav__link">Menu</a></li>
+                        <li class="nav__item"><a href="#products"
+                                class="nav__link">Product</a></li>
+                        <li class="nav__item"><a href="#contact"
+                                class="nav__link">Contact</a></li>
+                    </ul>
+                </div>
+
+                <div class="navbar-extra">
+                    <a href="#" id="search-button"><i
+                            data-feather="search"></i></a>
+                    <a href="#" id="shopping-cart-button"><i
+                            data-feather="shopping-cart"></i><span
+                            class="quantity-badge" x-show="$store.cart.quantity"
+                            x-text="$store.cart.quantity"></span></a>
+                    <a href="#" id="hamburger-menu"><i
+                            data-feather="menu"></i></a>
+                </div>
+
+                <!-- Search Form -->
+                <div class="search-form">
+                    <input type="search" id="search-box"
+                        placeholder="search here...">
+                    <label for="search-box"><i
+                            data-feather="search"></i></label>
+                </div>
+
+                <!-- Shopping Cart -->
+                <div class="shopping-cart">
+                    <template x-for="(item, index) in $store.cart.items"
+                        x-keys="index">
+                        <div class="cart-item">
+                            <img :src="`Assets/Img/Menu/${item.img}`"
+                                :alt="item.name">
+                            <div class="item-detail">
+                                <h3 x-text="item.name"></h3>
+                                <div class="item-price">
+                                    <span x-text="rupiah(item.price)"></span>
+                                    &times;
+                                    <button id="remove"
+                                        @click="$store.cart.remove(item.id)">&minus;</button>
+                                    <span x-text="item.quantity"></span>
+                                    <button id="add"
+                                        @click="$store.cart.add(item)">&plus;</button>
+                                    &equals;
+                                    <span x-text="rupiah(item.total)"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <h4 x-show="!$store.cart.items.length"
+                        style="margin-top: 1rem;">Cart is empty.</h4>
+                    <h4 x-show="$store.cart.items.length">Total: <span
+                            x-text="rupiah($store.cart.total)"></span></h4>
+
+                    <div class="form-container"
+                        x-show="$store.cart.items.length">
+                        <form action id="checkoutForm">
+                            <input type="hidden" name="items"
+                                x-model="JSON.stringify($store.cart.items)">
+                            <input type="hidden" name="total"
+                                x-model="$store.cart.total">
+                            <h5>Customer Contact</h5>
+
+                            <label for="name">
+                                <span>Name</span>
+                                <input type="text" name="name" id="name">
+                            </label>
+
+                            <label for="email">
+                                <span>Email</span>
+                                <input type="email" name="email" id="email">
+                            </label>
+
+                            <label for="phone">
+                                <span>Phone</span>
+                                <input type="number" name="phone" id="phone"
+                                    autocomplete="off">
+                            </label>
+
+                            <button class="checkout-button disabled"
+                                type="submit"
+                                id="checkout-button"
+                                value="checkout">Checkout</button>
+                        </form>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <!-- Hero section -->
+        <main>
+            <section class="hero" id="home">
+                <div class="mask-container">
+                    <main class="content">
+                        <h1 class="home-tittle">Complete Your Day With Our
+                            <span>Premium Bread</span>
+                            And
+                            <span>Pastries</span></h1>
+                        <p class="home-desc">This is a personal project and not
+                            used for commercial activities.</p>
+                    </main>
+                </div>
+            </section>
+
+            <!-- About Section -->
+            <section class="about" id="about">
+                <h2>About <span>Us</span></h2>
+
+                <div class="row">
+                    <div class="about-img">
+                        <img src="Assets/Img/AboutUs.jpg" alt="About Us">
+                    </div>
+                    <div class="content">
+                        <h3 class="about-h3"><span
+                                class="moon">Moon</span><span>Bakery</span> is
+                            a boutique bakery and
+                            pastry shop offering a variety of breads and pastry
+                            from around the world</h3>
+                        <p class="about-p">Our products are made with high taste
+                            and quality. We
+                            use premium natural ingredients along with the best
+                            recipes and strict quality control to ensure that
+                            our products are highly nutritious and consistently
+                            of high quality.</p>
+                        <p class="about-p">We are dedicated to delivering
+                            high-quality products,
+                            superior service, and customer satisfaction. This
+                            commitment drives us to create an efficient website
+                            and provide reliable cake delivery services.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Menu Section -->
+            <section class="menu" id="menu">
+                <h2>Our <span>Menu</span></h2>
+                <p>Premium bread and pastry made with dedication to get high
+                    taste and quality.</p>
+
+                <div class="row">
+                    <div class="menu-card">
+                        <img src="Assets/Img/Menu/Cheesecake.jpg"
+                            alt="cheesecake"
+                            class="menu-card-img">
+                        <h3 class="menu-card-title">Cheesecake</h3>
+                        <p class="menu-card-price">Rp 33.000</p>
+                    </div>
+                    <div class="menu-card">
+                        <img src="Assets/Img/Menu/CheesecakeStrawberry.jpg"
+                            alt="cheesecakestrawberry"
+                            class="menu-card-img">
+                        <h3 class="menu-card-title">Cheesecake Strawberry</h3>
+                        <p class="menu-card-price">Rp 40.000</p>
+                    </div>
+                    <div class="menu-card">
+                        <img src="Assets/Img/Menu/CheesecakeBlueberry.jpg"
+                            alt="cheesecakeblueberry"
+                            class="menu-card-img">
+                        <h3 class="menu-card-title">Cheesecake Blueberry</h3>
+                        <p class="menu-card-price">Rp 42.000</p>
+                    </div>
+                    <div class="menu-card">
+                        <img src="Assets/Img/Menu/CheesecakeLotusBiscoff.jpg"
+                            alt="cheesecakelotusbiscoff"
+                            class="menu-card-img">
+                        <h3 class="menu-card-title">Cheesecake Lotus
+                            Biscoff</h3>
+                        <p class="menu-card-price">Rp 45.000</p>
+                    </div>
+                    <div class="menu-card">
+                        <img src="Assets/Img/Menu/CheeseBurger.jpg"
+                            alt="cheeseburger"
+                            class="menu-card-img">
+                        <h3 class="menu-card-title">Cheese Burger</h3>
+                        <p class="menu-card-price">Rp 35.000</p>
+                    </div>
+                    <div class="menu-card">
+                        <img src="Assets/Img/Menu/DoubleBurger.jpg"
+                            alt="doubleburger"
+                            class="menu-card-img">
+                        <h3 class="menu-card-title">Double Burger</h3>
+                        <p class="menu-card-price">Rp 50.000</p>
+                    </div>
+                    <div class="menu-card">
+                        <img src="Assets/Img/Menu/Croissant.jpg"
+                            alt="croissant"
+                            class="menu-card-img">
+                        <h3 class="menu-card-title">Croissant</h3>
+                        <p class="menu-card-price">Rp 30.000</p>
+                    </div>
+                    <div class="menu-card">
+                        <img src="Assets/Img/Menu/Macaron.jpg"
+                            alt="macaron"
+                            class="menu-card-img">
+                        <h3 class="menu-card-title">Macaron 10pcs</h3>
+                        <p class="menu-card-price">Rp 100.000</p>
+                    </div>
+                    <div class="menu-card">
+                        <img src="Assets/Img/Menu/Pretzels.jpg"
+                            alt="pretzels"
+                            class="menu-card-img">
+                        <h3 class="menu-card-title">Pretzels</h3>
+                        <p class="menu-card-price">Rp 25.000</p>
+                    </div>
+                    <div class="menu-card">
+                        <img src="Assets/Img/Menu/Donut.jpg"
+                            alt="donut"
+                            class="menu-card-img">
+                        <h3 class="menu-card-title">Donut all variant</h3>
+                        <p class="menu-card-price">Rp 7.000</p>
+                    </div>
+                    <div class="menu-card">
+                        <img src="Assets/Img/Menu/DoubleDonut.jpg"
+                            alt="doubledonut"
+                            class="menu-card-img">
+                        <h3 class="menu-card-title">A plate of donut</h3>
+                        <p class="menu-card-price">Rp 12.000</p>
+                    </div>
+                    <div class="menu-card">
+                        <img src="Assets/Img/Menu/Sandwich.jpg"
+                            alt="sandwich"
+                            class="menu-card-img">
+                        <h3 class="menu-card-title">Sandwich</h3>
+                        <p class="menu-card-price">Rp 25.000</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Testimonial Section -->
+            <section class="testimonials">
+                <h2 class="section-title">What Our <span>Customer</span>
+                    Say</h2>
+
+                <div class="owl-carousel owl-theme testimonials-container">
+
+                    <!-- Item Testimonial Card -->
+                    <div class="item testimonial-card">
+                        <div class="test-card-body">
+                            <div class="quote">
+                                <i data-feather="hash" class="moonhash"></i>
+                                <h2>SimpleHappiness</h2>
+                            </div>
+                            <p>와, 빵이 정말 맛있어요! 구름을 먹는 것처럼 부드럽고 달콤했습니다. 다음에도 또 사고
+                                싶어요✨💫
+                                <br>
+                                빵이 정성을 다해 만든 것 같아요. 맛있는 빵을 만들어주신 캄사함니다!</p>
+                            <div class="ratings">
+                                <i data-feather="star" class="star-full"></i>
+                                <i data-feather="star" class="star-full"></i>
+                                <i data-feather="star" class="star-full"></i>
+                                <i data-feather="star" class="star-full"></i>
+                                <i data-feather="star" class="star-full"></i>
+                            </div>
+                        </div>
+                        <div class="profile">
+                            <div class="profile-image">
+                                <img src="Assets/Img/Customer/IU.jpg"
+                                    alt="customer">
+                            </div>
+                            <div class="profile-desc">
+                                <span>IU</span>
+                                <span>Singer/Songwriter</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="item testimonial-card">
+                        <div class="test-card-body">
+                            <div class="quote">
+                                <i data-feather="hash" class="moonhash"></i>
+                                <h2>DreamyBites🍰✨</h2>
+                            </div>
+                            <p>Wow, cheesecake from this place tastes like
+                                something you would
+                                eat while watching the sunset over the Hollywood
+                                hills. Simple, but magical.
+
+                                If there was an audition for cheesecake,
+                                this would definitely get the lead role!🎥🎥</p>
+                            <div class="ratings">
+                                <i data-feather="star" class="star-full"></i>
+                                <i data-feather="star" class="star-full"></i>
+                                <i data-feather="star" class="star-full"></i>
+                                <i data-feather="star" class="star-full"></i>
+                                <i data-feather="star" class="star-full"></i>
+                            </div>
+                        </div>
+                        <div class="profile">
+                            <div class="profile-image">
+                                <img src="Assets/Img/Customer/Mia.jpg"
+                                    alt="customer">
+                            </div>
+                            <div class="profile-desc">
+                                <span>Mia Dolan</span>
+                                <span>Actress</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="item testimonial-card">
+                        <div class="test-card-body">
+                            <div class="quote">
+                                <i data-feather="hash" class="moonhash"></i>
+                                <h2>SmoothLikeJazz</h2>
+                            </div>
+                            <p>Is this bread? No, it's not. It's a symphony of
+                                flavours. If it were a song, it would be a
+                                timeless jazz standard.
+
+                                It's smoother than my piano solos at jazz clubs.
+                                If there was a Grammy for bread, this would win,
+                                no contest!📀🏆</p>
+                            <div class="ratings">
+                                <i data-feather="star" class="star-full"></i>
+                                <i data-feather="star" class="star-full"></i>
+                                <i data-feather="star" class="star-full"></i>
+                                <i data-feather="star" class="star-full"></i>
+                                <i data-feather="star" class="star-full"></i>
+                            </div>
+                        </div>
+                        <div class="profile">
+                            <div class="profile-image">
+                                <img src="Assets/Img/Customer/Sebastian.jpg"
+                                    alt="customer">
+                            </div>
+                            <div class="profile-desc">
+                                <span>Sebastian Wilder</span>
+                                <span>Pianist</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="item testimonial-card">
+                        <div class="test-card-body">
+                            <div class="quote">
+                                <i data-feather="hash" class="moonhash"></i>
+                                <h2>KomediKenyang</h2>
+                            </div>
+                            <p>Gila, burgernya enak banget, kayak udah
+                                belajar masak di Hogwarts atau apa, ya? Rasanya
+                                ngegoyang lidah gue, parah sih!
+
+                                Burger di sini tuh saking enaknya, bikin gue
+                                lupa kalau gue nggak punya duit buat beli
+                                kedua!</p>
+                            <div class="ratings">
+                                <i data-feather="star" class="star-full"></i>
+                                <i data-feather="star" class="star-full"></i>
+                                <i data-feather="star" class="star-full"></i>
+                                <i data-feather="star" class="star-full"></i>
+                                <i data-feather="star" class="star-full"></i>
+                            </div>
+                        </div>
+                        <div class="profile">
+                            <div class="profile-image">
+                                <img src="Assets/Img/Customer/RadityaDika.jpg"
+                                    alt="customer">
+                            </div>
+                            <div class="profile-desc">
+                                <span>Raditya Dika</span>
+                                <span>Film director/Author/Stand-up
+                                    comedian</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="item testimonial-card">
+                        <div class="test-card-body">
+                            <div class="quote">
+                                <i data-feather="hash" class="moonhash"></i>
+                                <h2>SheldonLovesBread</h2>
+                            </div>
+                            <p>Hmm, this bread is surprisingly palatable. The
+                                combination of gluten structure and yeast
+                                fermentation is nothing short of exquisite!
+
+                                If this bakery existed during the Roman Empire,
+                                Julius Caesar would have declared it a national
+                                treasure.</p>
+                            <div class="ratings">
+                                <i data-feather="star" class="star-full"></i>
+                                <i data-feather="star" class="star-full"></i>
+                                <i data-feather="star" class="star-full"></i>
+                                <i data-feather="star" class="star-full"></i>
+                                <i data-feather="star"></i>
+                            </div>
+                        </div>
+                        <div class="profile">
+                            <div class="profile-image">
+                                <img src="Assets/Img/Customer/SheldonCopper.jpg"
+                                    alt="customer">
+                            </div>
+                            <div class="profile-desc">
+                                <span>Sheldon Cooper</span>
+                                <span>Senior theoretical Physicist at
+                                    Caltech</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="item testimonial-card">
+                        <div class="test-card-body">
+                            <div class="quote">
+                                <i data-feather="hash" class="moonhash"></i>
+                                <h2>Meoww</h2>
+                            </div>
+                            <p>Meow meow meow meow meow meow meow meow meow meow
+                                meow meow meow meow meow meow meow meow meow
+                                meow meow meow meow meow meow meow meow meow
+                                meow meow meow meow meow meow meow meow meow</p>
+                            <div class="ratings">
+                                <i data-feather="star" class="star-full"></i>
+                                <i data-feather="star" class="star-full"></i>
+                                <i data-feather="star"></i>
+                                <i data-feather="star"></i>
+                                <i data-feather="star"></i>
+                            </div>
+                        </div>
+                        <div class="profile">
+                            <div class="profile-image">
+                                <img src="Assets/Img/Customer/MrCat.jpg"
+                                    alt="customer">
+                            </div>
+                            <div class="profile-desc">
+                                <span>Distinguished Gentleman</span>
+                                <span>Full-time worker from home</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="item testimonial-card">
+                        <div class="test-card-body">
+                            <div class="quote">
+                                <i data-feather="hash" class="moonhash"></i>
+                                <h2>TasteOfFate</h2>
+                            </div>
+                            <p>The flavour of this cheesecake is a harmony of
+                                the sweetness of life and the bitterness of
+                                travel. The strawberries are like a burning
+                                fire, while the soft cheese is a soothing
+                                breeze. A haunting, yet beautiful
+                                experience🍓🍰✨</p>
+                            <div class="ratings">
+                                <i data-feather="star" class="star-full"></i>
+                                <i data-feather="star" class="star-full"></i>
+                                <i data-feather="star" class="star-full"></i>
+                                <i data-feather="star" class="star-full"></i>
+                                <i data-feather="star" class="star-full"></i>
+                            </div>
+                        </div>
+                        <div class="profile">
+                            <div class="profile-image">
+                                <img
+                                    src="Assets/Img/Customer/HidetakaMiyazaki.jpg"
+                                    alt="customer">
+                            </div>
+                            <div class="profile-desc">
+                                <span>Hidetaka Miyazaki</span>
+                                <span>Game Director/Game Designer/Writer</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="item testimonial-card">
+                        <div class="test-card-body">
+                            <div class="quote">
+                                <i data-feather="hash" class="moonhash"></i>
+                                <h2>MeowgicalBites✨✨</h2>
+                            </div>
+                            <p>Meow-velous! This bread looks like it was made in
+                                a fairy's kitchen! The softness makes me feel
+                                like I'm flying above the clouds chasing a
+                                glowing butterfly.
+
+                                Purr-fectly delicious! Is this
+                                ordinary bread or does it have a secret spell on
+                                it? Meow~</p>
+                            <div class="ratings">
+                                <i data-feather="star" class="star-full"></i>
+                                <i data-feather="star" class="star-full"></i>
+                                <i data-feather="star" class="star-full"></i>
+                                <i data-feather="star" class="star-full"></i>
+                                <i data-feather="star" class="star-full"></i>
+                            </div>
+                        </div>
+                        <div class="profile">
+                            <div class="profile-image">
+                                <img src="Assets/Img/Customer/MagicCat.jpg"
+                                    alt="customer">
+                            </div>
+                            <div class="profile-desc">
+                                <span>Mr. Magic Cat</span>
+                                <span>Full-time wizard at Hogwarts</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Product Section -->
+            <section class="products" id="products" x-data="products">
+                <h2>Shop <span>Now</span></h2>
+                <p>You can buy products by adding them to your cart, then
+                    checking out by go to the cart icon in the upper right
+                    corner.</p>
+
+                <div class="row">
+                    <template x-for="(item, index) in items" x-key="index">
+                        <div class="product-card">
+                            <div class="product-icons">
+                                <a href="#"
+                                    @click.prevent="$store.cart.add(item)">
+                                    <svg
+                                        width="24"
+                                        height="24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <use
+                                            href="Assets/Img/feather-sprite.svg#shopping-cart" />
+                                    </svg>
+                                </a>
+                            </div>
+
+                            <div class="product-image">
+                                <img :src="`Assets/Img/Menu/${item.img}`"
+                                    :alt="item.name">
+                            </div>
+                            <div class="product-content">
+                                <h3 x-text="item.name"></h3>
+                                <div class="product-stars">
+                                    <svg width="24" height="24"
+                                        fill="currentColor"
+                                        stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <use
+                                            href="Assets/Img/feather-sprite.svg#star" />
+                                    </svg>
+                                    <svg width="24" height="24"
+                                        fill="currentColor"
+                                        stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <use
+                                            href="Assets/Img/feather-sprite.svg#star" />
+                                    </svg>
+                                    <svg width="24" height="24"
+                                        fill="currentColor"
+                                        stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <use
+                                            href="Assets/Img/feather-sprite.svg#star" />
+                                    </svg>
+                                    <svg width="24" height="24"
+                                        fill="currentColor"
+                                        stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <use
+                                            href="Assets/Img/feather-sprite.svg#star" />
+                                    </svg>
+                                    <svg width="24" height="24"
+                                        fill="currentColor"
+                                        stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <use
+                                            href="Assets/Img/feather-sprite.svg#star" />
+                                    </svg>
+                                </div>
+                                <div class="product-price"><span
+                                        x-text="rupiah(item.price)"></span></div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </section>
+
+            <!-- Contact Section -->
+            <section class="contact" id="contact">
+                <h2>Contact <span>Us</span></h2>
+                <p>You can contact us from here by input your name, email, and
+                    phone number. We will gladly assist you.</p>
+
+                <div class="row">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.4954939463255!2d106.70209667478305!3d-6.198169460720235!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f9293c3c0037%3A0x8049310d4ca332d6!2sMoon%20Bakery!5e0!3m2!1sen!2sid!4v1730530884385!5m2!1sen!2sid"
+                        allowfullscreen loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"
+                        class="map"></iframe>
+
+                    <form action>
+                        <div class="input-group">
+                            <i data-feather="user"></i>
+                            <input type="text" placeholder="name">
+                        </div>
+                        <div class="input-group">
+                            <i data-feather="mail"></i>
+                            <input type="text" placeholder="email">
+                        </div>
+                        <div class="input-group">
+                            <i data-feather="phone"></i>
+                            <input type="text" placeholder="phone number">
+                        </div>
+                        <button type="submit" class="btn">Send</button>
+                    </form>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer footer-section">
+            <div class="footer__container container grid">
+                <div class="footer__content">
+                    <a href="#" class="footer__logo">Moon<span>Bakery</span></a>
+                    <p class="footer__description">Boutique bakery and pastry
+                        shop with premium bread from around the world.</p>
+                    <br>
+                    <p class="footer__description">Jl. Metland Boulevard Lot.
+                        C-3 Metland Cyber City, Jl. Puri Bar., Parung Jaya, Kota
+                        Tangerang, Banten 15159</p>
+                </div>
+
+                <div class="footer__content">
+                    <h3 class="footer__title">About</h3>
+                    <ul class="footer__links">
+                        <li><a href="#about" class="footer__link">About
+                                Us</a></li>
+                        <li><a href="#about" class="footer__link">Our
+                                Mission</a></li>
+                        <li><a href="#" class="footer__link">Partners</a></li>
+                        <li><a href="#" class="footer__link">Blog</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer__content">
+                    <h3 class="footer__title">Information</h3>
+                    <ul class="footer__links">
+                        <li><a href="#" class="footer__link">FAQ</a></li>
+                        <li><a href="#" class="footer__link">Shipping &
+                                Delivery</a></li>
+                        <li><a href="#contact"
+                                class="footer__link">Store Location</a></li>
+                        <li><a href="#" class="footer__link">Discounts</a></li>
+                        <li><a href="#" class="footer__link">Privacy
+                                Policy</a></li>
+                        <li><a href="#" class="footer__link">Terms of
+                                Service</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer__content">
+                    <h3 class="footer__title">Support</h3>
+                    <ul class="footer__links">
+                        <li><a href="#" class="footer__link">Customer
+                                help</a></li>
+                        <li><a href="#" class="footer__link">Careers</a></li>
+                        <li><a href="#"
+                                class="footer__link">Subscription</a></li>
+                        <li><a href="#" class="footer__link">Report a
+                                bug</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer__social">
+                    <a href="https://github.com/alfinsrf"
+                        class="footer__social-link"><i
+                            data-feather="github"></i></a>
+                    <a
+                        href="https://www.linkedin.com/in/alfin-syaghaf-rifai-367262229/"
+                        class="footer__social-link"><i
+                            data-feather="linkedin"></i></a>
+                    <a href="#" class="footer__social-link"><i
+                            data-feather="instagram"></i></a>
+                    <a href="#" class="footer__social-link"><i
+                            data-feather="twitter"></i></a>
+                    <a href="#" class="footer__social-link"><i
+                            data-feather="facebook"></i></a>
+                </div>
+            </div>
+            <p class="footer__copy">&copy; 2024 ASR.</p>
+        </footer>
+
+        <!-- Modal box Item Detail -->
+        <div class="modal" id="item-detail-modal">
+            <div class="modal-container">
+                <a href="#" class="close-icon"><i data-feather="x"></i></a>
+                <div class="modal-content">
+                    <img src="Assets/Img/Menu/Cheesecake.jpg" alt="Product 1">
+                    <div class="product-content">
+                        <h3>Product 1</h3>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing
+                            elit. Aspernatur nostrum error earum, dolor culpa
+                            eum dolores unde.
+                            Dolore maxime ipsam ipsa placeat eum temporibus
+                            molestiae ullam earum velit, cupiditate
+                            quisquam.</p>
+                        <div class="product-stars">
+                            <i data-feather="star" class="star-full"></i>
+                            <i data-feather="star" class="star-full"></i>
+                            <i data-feather="star" class="star-full"></i>
+                            <i data-feather="star" class="star-full"></i>
+                            <i data-feather="star"></i>
+                        </div>
+                        <div class="product-price">IDR 30.000 <span>IDR
+                                55.000</span></div>
+                        <a href="#"><i data-feather="shopping-cart"></i>
+                            <span>add to cart</span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feather Icons -->
+        <script>
+        feather.replace()
+        </script>
+
+        <!-- Scroll Reveal Package -->
+        <script src="https://unpkg.com/scrollreveal"></script>
+
+        <!-- JQuery -->
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+        <!-- Owl Carousel JS -->
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+
+        <!-- Javascript -->
+        <script src="JS/script.js"></script>
+    </body>
+</html>
